@@ -42,7 +42,7 @@ const whitespaceRE = /\s+/g
 
 const invalidAttributeRE = /[\s"'<>\/=]/
 
-const decodeHTMLCached = cached(he.decode)
+const decodeHTMLCached = cached(he.decode) // he是用来处理html的实体符号，特殊字符之类的， cached加了缓存
 
 export const emptySlotScopeToken = `_empty_`
 
@@ -362,7 +362,7 @@ export function parse (
           child = {
             type: 2,
             expression: res.expression,
-            tokens: res.tokens,
+            tokens: res.tokens, // tokens含有两种类型，普通字串和结构体 @binding
             text
           }
         } else if (text !== ' ' || !children.length || children[children.length - 1].text !== ' ') {

@@ -150,9 +150,10 @@ export function hasOwn (obj: Object | Array<*>, key: string): boolean {
 /**
  * Create a cached version of a pure function.
  */
+// 这个函数可以缓存函数的执行的结果 设计很精巧
 export function cached<F: Function> (fn: F): F {
-  const cache = Object.create(null)
-  return (function cachedFn (str: string) {
+  const cache = Object.create(null) // 防止原型链污染
+  return (function cachedFn (str: string) { // 缓存函数执行的结果，加速，如果函数执行过，就直接给结果，不然就执行后给结果
     const hit = cache[str]
     return hit || (cache[str] = fn(str))
   }: any)

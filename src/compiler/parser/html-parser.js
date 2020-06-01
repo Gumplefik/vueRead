@@ -20,7 +20,7 @@ const ncname = `[a-zA-Z_][\\-\\.0-9_a-zA-Z${unicodeRegExp.source}]*`
 const qnameCapture = `((?:${ncname}\\:)?${ncname})`
 const startTagOpen = new RegExp(`^<${qnameCapture}`)
 const startTagClose = /^\s*(\/?)>/
-const endTag = new RegExp(`^<\\/${qnameCapture}[^>]*>`)
+const endTag = new RegExp(`^<\\/${qnameCapture}[^>]*>`) // 这里两个反斜杠应该也是为了兼容android webview
 const doctype = /^<!DOCTYPE [^>]+>/i
 // #7298: escape - to avoid being passed as HTML comment when inlined in page
 const comment = /^<!\--/
@@ -72,12 +72,13 @@ export function parseHTML (html, options) {
             if (options.shouldKeepComment) {
               options.comment(html.substring(4, commentEnd), index, index + commentEnd + 3)
             }
-            advance(commentEnd + 3)
+            advance(commentEnd + 3) // 索引向后，并且去掉前面的内容
             continue
           }
         }
 
         // http://en.wikipedia.org/wiki/Conditional_comment#Downlevel-revealed_conditional_comment
+        // ie适配的标签处理
         if (conditionalComment.test(html)) {
           const conditionalEnd = html.indexOf(']>')
 
@@ -99,7 +100,7 @@ export function parseHTML (html, options) {
         if (endTagMatch) {
           const curIndex = index
           advance(endTagMatch[0].length)
-          parseEndTag(endTagMatch[1], curIndex, index)
+          parseEndTag(endTagMatch[1], curIndex, index) // 找到匹配的前置标签，出栈
           continue
         }
 
@@ -107,6 +108,7 @@ export function parseHTML (html, options) {
         const startTagMatch = parseStartTag()
         if (startTagMatch) {
           handleStartTag(startTagMatch)
+          // 回车处理
           if (shouldIgnoreFirstNewline(startTagMatch.tagName, html)) {
             advance(1)
           }
@@ -117,6 +119,7 @@ export function parseHTML (html, options) {
       let text, rest, next
       if (textEnd >= 0) {
         rest = html.slice(textEnd)
+        // 处理纯文本
         while (
           !endTag.test(rest) &&
           !startTagOpen.test(rest) &&
@@ -129,10 +132,10 @@ export function parseHTML (html, options) {
           textEnd += next
           rest = html.slice(textEnd)
         }
-        text = html.substring(0, textEnd)
+        text = html.substring(0, textEnd) // 这一段就是纯文本
       }
 
-      if (textEnd < 0) {
+      if (textEnd < 0) { // 全都是文本，没有大于小于号
         text = html
       }
 

@@ -17,15 +17,15 @@ export function parseFilters (exp: string): string {
     prev = c
     c = exp.charCodeAt(i)
     if (inSingle) {
-      if (c === 0x27 && prev !== 0x5C) inSingle = false
+      if (c === 0x27 && prev !== 0x5C) inSingle = false // 0x27 ' 0x5C \
     } else if (inDouble) {
-      if (c === 0x22 && prev !== 0x5C) inDouble = false
+      if (c === 0x22 && prev !== 0x5C) inDouble = false // 0x22 "
     } else if (inTemplateString) {
-      if (c === 0x60 && prev !== 0x5C) inTemplateString = false
+      if (c === 0x60 && prev !== 0x5C) inTemplateString = false // 0x60  `
     } else if (inRegex) {
-      if (c === 0x2f && prev !== 0x5C) inRegex = false
+      if (c === 0x2f && prev !== 0x5C) inRegex = false // 0x2f /
     } else if (
-      c === 0x7C && // pipe
+      c === 0x7C && // pipe   0x7c |
       exp.charCodeAt(i + 1) !== 0x7C &&
       exp.charCodeAt(i - 1) !== 0x7C &&
       !curly && !square && !paren
@@ -33,7 +33,7 @@ export function parseFilters (exp: string): string {
       if (expression === undefined) {
         // first filter, end of expression
         lastFilterIndex = i + 1
-        expression = exp.slice(0, i).trim()
+        expression = exp.slice(0, i).trim() // filter前面的文本
       } else {
         pushFilter()
       }
@@ -64,7 +64,7 @@ export function parseFilters (exp: string): string {
     }
   }
 
-  if (expression === undefined) {
+  if (expression === undefined) { // 没有filter 的情况
     expression = exp.slice(0, i).trim()
   } else if (lastFilterIndex !== 0) {
     pushFilter()
@@ -84,7 +84,7 @@ export function parseFilters (exp: string): string {
   return expression
 }
 
-function wrapFilter (exp: string, filter: string): string {
+function wrapFilter (exp: string, filter: string): string { // 转换filter为一定格式的字符串后续执行
   const i = filter.indexOf('(')
   if (i < 0) {
     // _f: resolveFilter
