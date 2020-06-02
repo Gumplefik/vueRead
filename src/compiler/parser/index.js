@@ -358,14 +358,14 @@ export function parse (
         }
         let res
         let child: ?ASTNode
-        if (!inVPre && text !== ' ' && (res = parseText(text, delimiters))) {
+        if (!inVPre && text !== ' ' && (res = parseText(text, delimiters))) { // 有插值绑定的情况
           child = {
             type: 2,
             expression: res.expression,
             tokens: res.tokens, // tokens含有两种类型，普通字串和结构体 @binding
             text
           }
-        } else if (text !== ' ' || !children.length || children[children.length - 1].text !== ' ') {
+        } else if (text !== ' ' || !children.length || children[children.length - 1].text !== ' ') { // 纯文本的情况
           child = {
             type: 3,
             text

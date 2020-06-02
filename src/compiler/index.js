@@ -12,6 +12,7 @@ export const createCompiler = createCompilerCreator(function baseCompile (
   template: string,
   options: CompilerOptions
 ): CompiledResult {
+  // template转ast， 标注静态节点
   const ast = parse(template.trim(), options)
   if (options.optimize !== false) {
     optimize(ast, options)

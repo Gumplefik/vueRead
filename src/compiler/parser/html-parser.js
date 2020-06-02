@@ -22,7 +22,7 @@ const startTagOpen = new RegExp(`^<${qnameCapture}`)
 const startTagClose = /^\s*(\/?)>/
 const endTag = new RegExp(`^<\\/${qnameCapture}[^>]*>`) // 这里两个反斜杠应该也是为了兼容android webview
 const doctype = /^<!DOCTYPE [^>]+>/i
-// #7298: escape - to avoid being passed as HTML comment when inlined in page
+// #7298: escape - to avoid being passed as HTML comment when inlined in page 正则匹配在安卓的webview里有匹配问题
 const comment = /^<!\--/
 const conditionalComment = /^<!\[/
 
@@ -54,16 +54,16 @@ function decodeAttr (value, shouldDecodeNewlines) {
 export function parseHTML (html, options) {
   const stack = []
   const expectHTML = options.expectHTML
-  const isUnaryTag = options.isUnaryTag || no
+  const isUnaryTag = options.isUnaryTag || no // 是不是自闭和标签
   const canBeLeftOpenTag = options.canBeLeftOpenTag || no
   let index = 0
   let last, lastTag
   while (html) {
     last = html
     // Make sure we're not in a plaintext content element like script/style
-    if (!lastTag || !isPlainTextElement(lastTag)) {
-      let textEnd = html.indexOf('<')
-      if (textEnd === 0) {
+    if (!lastTag || !isPlainTextElement(lastTag)) { // 确保不是 style script textarea
+      let textEnd = html.indexOf('<') //  标签或注释开始
+      if (textEnd === 0) { // 有标签或者注释的情况
         // Comment:
         if (comment.test(html)) {
           const commentEnd = html.indexOf('-->')
@@ -115,11 +115,11 @@ export function parseHTML (html, options) {
           continue
         }
       }
-
+      // 主要处理开始是文本的情况
       let text, rest, next
       if (textEnd >= 0) {
         rest = html.slice(textEnd)
-        // 处理纯文本
+        // 处理纯文本 获得纯文本字段
         while (
           !endTag.test(rest) &&
           !startTagOpen.test(rest) &&
@@ -130,7 +130,7 @@ export function parseHTML (html, options) {
           next = rest.indexOf('<', 1)
           if (next < 0) break
           textEnd += next
-          rest = html.slice(textEnd)
+          rest = html.slice(textEnd) // 主要是为了取到包含标签之类的一段内容， rest内容继续处理
         }
         text = html.substring(0, textEnd) // 这一段就是纯文本
       }
@@ -144,7 +144,7 @@ export function parseHTML (html, options) {
       }
 
       if (options.chars && text) {
-        options.chars(text, index - text.length, index)
+        options.chars(text, index - text.length, index) // 处理文本内容，是包含插值之类的
       }
     } else {
       let endTagLength = 0
