@@ -51,7 +51,7 @@ if (process.env.NODE_ENV !== 'production') {
       }
     })
   }
-
+  // 判断key是否可以允许获取
   const hasHandler = {
     has (target, key) {
       const has = key in target

@@ -35,7 +35,7 @@ export function initMixin (Vue: Class<Component>) {
       // internal component options needs special treatment.
       initInternalComponent(vm, options)
     } else {
-      vm.$options = mergeOptions(
+      vm.$options = mergeOptions( // 合并options
         resolveConstructorOptions(vm.constructor),
         options || {},
         vm
@@ -91,8 +91,10 @@ export function initInternalComponent (vm: Component, options: InternalComponent
 }
 
 export function resolveConstructorOptions (Ctor: Class<Component>) {
+  // Ctor Vue的constructor
   let options = Ctor.options
   if (Ctor.super) {
+    // option的继承以及更新后的合并
     const superOptions = resolveConstructorOptions(Ctor.super)
     const cachedSuperOptions = Ctor.superOptions
     if (superOptions !== cachedSuperOptions) {
@@ -106,7 +108,7 @@ export function resolveConstructorOptions (Ctor: Class<Component>) {
         extend(Ctor.extendOptions, modifiedOptions)
       }
       options = Ctor.options = mergeOptions(superOptions, Ctor.extendOptions)
-      if (options.name) {
+      if (options.name) { // 有组件name就直接注册上去
         options.components[options.name] = Ctor
       }
     }

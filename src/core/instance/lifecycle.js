@@ -28,7 +28,7 @@ export function setActiveInstance(vm: Component) {
     activeInstance = prevActiveInstance
   }
 }
-
+// 初始化参数
 export function initLifecycle (vm: Component) {
   const options = vm.$options
 
@@ -335,7 +335,7 @@ export function deactivateChildComponent (vm: Component, direct?: boolean) {
 
 export function callHook (vm: Component, hook: string) {
   // #7573 disable dep collection when invoking lifecycle hooks
-  pushTarget()
+  pushTarget() // 清空Dep.target 防止收集依赖
   const handlers = vm.$options[hook]
   const info = `${hook} hook`
   if (handlers) {
@@ -346,5 +346,5 @@ export function callHook (vm: Component, hook: string) {
   if (vm._hasHookEvent) {
     vm.$emit('hook:' + hook)
   }
-  popTarget()
+  popTarget() // 恢复之前的依赖场景
 }
