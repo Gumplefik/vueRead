@@ -199,7 +199,7 @@ export function defineReactive (
  * already exist.
  */
 export function set (target: Array<any> | Object, key: any, val: any): any {
-  if (process.env.NODE_ENV !== 'production' &&
+  if (process.env.NODE_ENV !== 'production' && // 原始类型不需要set
     (isUndef(target) || isPrimitive(target))
   ) {
     warn(`Cannot set reactive property on undefined, null, or primitive value: ${(target: any)}`)
@@ -226,7 +226,7 @@ export function set (target: Array<any> | Object, key: any, val: any): any {
     return val
   }
   defineReactive(ob.value, key, val)
-  ob.dep.notify()
+  ob.dep.notify() // 通知更新
   return val
 }
 

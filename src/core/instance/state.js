@@ -85,7 +85,7 @@ function initProps (vm: Component, propsOptions: Object) {
           vm
         )
       }
-      defineReactive(props, key, value, () => {
+      defineReactive(props, key, value, () => { // 这里就是为什么修改prop后会报错的原因
         if (!isRoot && !isUpdatingChildComponent) {
           warn(
             `Avoid mutating a prop directly since the value will be ` +
@@ -113,7 +113,7 @@ function initData (vm: Component) {
   let data = vm.$options.data
   data = vm._data = typeof data === 'function'
     ? getData(data, vm)
-    : data || {}
+    : data || {} // 这里的data如果是对象会构成在复用时的引用传递，一个地方修改会影响到另一个地方
   if (!isPlainObject(data)) {
     data = {}
     process.env.NODE_ENV !== 'production' && warn(
@@ -155,7 +155,7 @@ export function getData (data: Function, vm: Component): any {
   // #7573 disable dep collection when invoking data getters
   pushTarget()
   try {
-    return data.call(vm, vm)
+    return data.call(vm, vm) // data初始化可能会用到methods,prop之类的关联的属性
   } catch (e) {
     handleError(e, vm, `data()`)
     return {}
@@ -166,6 +166,7 @@ export function getData (data: Function, vm: Component): any {
 
 const computedWatcherOptions = { lazy: true }
 
+// 初始化computed
 function initComputed (vm: Component, computed: Object) {
   // $flow-disable-line
   const watchers = vm._computedWatchers = Object.create(null)
@@ -184,6 +185,7 @@ function initComputed (vm: Component, computed: Object) {
 
     if (!isSSR) {
       // create internal watcher for the computed property.
+      // 默认lazy模式，这样的话就会在get的时候计算值，通知
       watchers[key] = new Watcher(
         vm,
         getter || noop,
@@ -206,7 +208,7 @@ function initComputed (vm: Component, computed: Object) {
     }
   }
 }
-
+// computed的实现
 export function defineComputed (
   target: any,
   key: string,
@@ -217,7 +219,7 @@ export function defineComputed (
     sharedPropertyDefinition.get = shouldCache
       ? createComputedGetter(key)
       : createGetterInvoker(userDef)
-    sharedPropertyDefinition.set = noop
+    sharedPropertyDefinition.set = noop // 计算属性没有set
   } else {
     sharedPropertyDefinition.get = userDef.get
       ? shouldCache && userDef.cache !== false
@@ -242,10 +244,10 @@ function createComputedGetter (key) {
   return function computedGetter () {
     const watcher = this._computedWatchers && this._computedWatchers[key]
     if (watcher) {
-      if (watcher.dirty) {
+      if (watcher.dirty) { // 开始为true， true的时候会去调用get方法重新计算值
         watcher.evaluate()
       }
-      if (Dep.target) {
+      if (Dep.target) { // 如果有依赖，就全部通知一遍
         watcher.depend()
       }
       return watcher.value
@@ -283,7 +285,7 @@ function initMethods (vm: Component, methods: Object) {
         )
       }
     }
-    vm[key] = typeof methods[key] !== 'function' ? noop : bind(methods[key], vm)
+    vm[key] = typeof methods[key] !== 'function' ? noop : bind(methods[key], vm) // 如果键不是函数那就给个空函数，是的话就定义方法到vm上
   }
 }
 
@@ -336,8 +338,8 @@ export function stateMixin (Vue: Class<Component>) {
       warn(`$props is readonly.`, this)
     }
   }
-  Object.defineProperty(Vue.prototype, '$data', dataDef)
-  Object.defineProperty(Vue.prototype, '$props', propsDef)
+  Object.defineProperty(Vue.prototype, '$data', dataDef) // $data的实现
+  Object.defineProperty(Vue.prototype, '$props', propsDef) // $props的实现
 
   Vue.prototype.$set = set
   Vue.prototype.$delete = del

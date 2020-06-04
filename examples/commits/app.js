@@ -20,6 +20,12 @@ new Vue({
     this.fetchData()
   },
 
+  computed: {
+    b () {
+      return this.currentBranch + '123213'
+    }
+  },
+
   watch: {
     currentBranch: 'fetchData'
   },

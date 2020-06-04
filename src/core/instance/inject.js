@@ -28,7 +28,7 @@ export function initInjections (vm: Component) {
             vm
           )
         })
-      } else {
+      }  else {
         defineReactive(vm, key, result[key])
       }
     })
