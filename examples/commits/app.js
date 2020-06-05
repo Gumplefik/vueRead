@@ -27,7 +27,9 @@ new Vue({
   },
 
   watch: {
-    currentBranch: 'fetchData'
+    currentBranch() {
+      return this.currentBranch + '666'
+    }
   },
 
   filters: {

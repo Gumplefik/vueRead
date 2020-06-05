@@ -289,6 +289,7 @@ function initMethods (vm: Component, methods: Object) {
   }
 }
 
+// 初始化watch
 function initWatch (vm: Component, watch: Object) {
   for (const key in watch) {
     const handler = watch[key]
@@ -344,7 +345,7 @@ export function stateMixin (Vue: Class<Component>) {
   Vue.prototype.$set = set
   Vue.prototype.$delete = del
 
-  Vue.prototype.$watch = function (
+  Vue.prototype.$watch = function ( // $watch的实现，可以用来处理watch
     expOrFn: string | Function,
     cb: any,
     options?: Object
@@ -363,7 +364,7 @@ export function stateMixin (Vue: Class<Component>) {
         handleError(error, vm, `callback for immediate watcher "${watcher.expression}"`)
       }
     }
-    return function unwatchFn () {
+    return function unwatchFn () { // 可以用来取消watch
       watcher.teardown()
     }
   }
