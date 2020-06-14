@@ -82,17 +82,17 @@ export function parse (
 ): ASTElement | void {
   warn = options.warn || baseWarn
 
-  platformIsPreTag = options.isPreTag || no // ？
-  platformMustUseProp = options.mustUseProp || no // ？
-  platformGetTagNamespace = options.getTagNamespace || no // ？
-  const isReservedTag = options.isReservedTag || no // ？
-  maybeComponent = (el: ASTElement) => !!el.component || !isReservedTag(el.tag) // ？
+  platformIsPreTag = options.isPreTag || no //
+  platformMustUseProp = options.mustUseProp || no //
+  platformGetTagNamespace = options.getTagNamespace || no //
+  const isReservedTag = options.isReservedTag || no //
+  maybeComponent = (el: ASTElement) => !!el.component || !isReservedTag(el.tag) //
 
   transforms = pluckModuleFunction(options.modules, 'transformNode')
   preTransforms = pluckModuleFunction(options.modules, 'preTransformNode')
   postTransforms = pluckModuleFunction(options.modules, 'postTransformNode')
 
-  delimiters = options.delimiters
+  delimiters = options.delimiters // 插值分隔符
 
   const stack = []
   const preserveWhitespace = options.preserveWhitespace !== false
@@ -265,7 +265,7 @@ export function parse (
         element = preTransforms[i](element, options) || element
       }
 
-      if (!inVPre) {
+      if (!inVPre) { // v-pre
         processPre(element)
         if (element.pre) {
           inVPre = true
@@ -406,6 +406,7 @@ function processPre (el) {
   }
 }
 
+// 这里处理pre，即文本不做Ast转换 保持原样 包括属性
 function processRawAttrs (el) {
   const list = el.attrsList
   const len = list.length
@@ -487,6 +488,7 @@ function processRef (el) {
   }
 }
 
+// v-for的 解析
 export function processFor (el: ASTElement) {
   let exp
   if ((exp = getAndRemoveAttr(el, 'v-for'))) {
@@ -527,7 +529,7 @@ export function parseFor (exp: string): ?ForParseResult {
   }
   return res
 }
-
+// v-if
 function processIf (el) {
   const exp = getAndRemoveAttr(el, 'v-if')
   if (exp) {

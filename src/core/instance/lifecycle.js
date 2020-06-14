@@ -107,6 +107,7 @@ export function lifecycleMixin (Vue: Class<Component>) {
       remove(parent.$children, vm)
     }
     // teardown watchers
+    // 所有watch关闭s
     if (vm._watcher) {
       vm._watcher.teardown()
     }
@@ -116,7 +117,7 @@ export function lifecycleMixin (Vue: Class<Component>) {
     }
     // remove reference from data ob
     // frozen object may not have observer.
-    if (vm._data.__ob__) {
+    if (vm._data.__ob__) { // 带ok的就是已经oberver的数据
       vm._data.__ob__.vmCount--
     }
     // call the last hook...

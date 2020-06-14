@@ -186,7 +186,7 @@ export function parseHTML (html, options) {
     index += n
     html = html.substring(n)
   }
-
+解析开头的tag
   function parseStartTag () {
     const start = html.match(startTagOpen)
     if (start) {
@@ -195,8 +195,9 @@ export function parseHTML (html, options) {
         attrs: [],
         start: index
       }
-      advance(start[0].length)
+      advance(start[0].length) //右移
       let end, attr
+      // 解析attr
       while (!(end = html.match(startTagClose)) && (attr = html.match(dynamicArgAttribute) || html.match(attribute))) {
         attr.start = index
         advance(attr[0].length)
@@ -225,7 +226,7 @@ export function parseHTML (html, options) {
       }
     }
 
-    const unary = isUnaryTag(tagName) || !!unarySlash
+    const unary = isUnaryTag(tagName) || !!unarySlash // 是否自闭和
 
     const l = match.attrs.length
     const attrs = new Array(l)
@@ -262,6 +263,7 @@ export function parseHTML (html, options) {
 
     // Find the closest opened tag of the same type
     if (tagName) {
+      // 匹配结束标签
       lowerCasedTagName = tagName.toLowerCase()
       for (pos = stack.length - 1; pos >= 0; pos--) {
         if (stack[pos].lowerCasedTag === lowerCasedTagName) {

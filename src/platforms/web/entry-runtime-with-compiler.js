@@ -15,6 +15,7 @@ const idToTemplate = cached(id => {
 })
 
 const mount = Vue.prototype.$mount
+// 更新mount，添加complier的处理
 Vue.prototype.$mount = function (
   el?: string | Element, // 这里的类型element就是dom元素
   hydrating?: boolean // 服务端渲染相关的参数
@@ -53,7 +54,7 @@ Vue.prototype.$mount = function (
         }
         return this
       }
-    } else if (el) { // 有render并且有dom  这种一般应该是根节点
+    } else if (el) { // 没有render 有dom和没有template，就是template写在 script type="text/x-template"的形式
       template = getOuterHTML(el)
     }
     if (template) {
@@ -71,7 +72,7 @@ Vue.prototype.$mount = function (
         comments: options.comments // 要不要保留渲染模版里的注释
       }, this)
       options.render = render
-      options.staticRenderFns = staticRenderFns
+      options.staticRenderFns = staticRenderFns // 静态节点只需要渲染一次，patch的时候不需要比较
 
       /* istanbul ignore if */
       if (process.env.NODE_ENV !== 'production' && config.performance && mark) {

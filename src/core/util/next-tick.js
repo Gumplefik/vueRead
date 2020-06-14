@@ -10,7 +10,7 @@ export let isUsingMicroTask = false
 const callbacks = []
 let pending = false
 
-function flushCallbacks () {
+function flushCallbacks () { // nexttick 中cb真正执行的地方
   pending = false
   const copies = callbacks.slice(0)
   callbacks.length = 0
@@ -48,6 +48,7 @@ if (typeof Promise !== 'undefined' && isNative(Promise)) {
     // microtask queue but the queue isn't being flushed, until the browser
     // needs to do some other work, e.g. handle a timer. Therefore we can
     // "force" the microtask queue to be flushed by adding an empty timer.
+    // 这里应当是微任务在ios中有些奇怪表现
     if (isIOS) setTimeout(noop)
   }
   isUsingMicroTask = true
