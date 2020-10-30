@@ -57,6 +57,7 @@ let platformMustUseProp
 let platformGetTagNamespace
 let maybeComponent
 
+// 创建普通的标签
 export function createASTElement (
   tag: string,
   attrs: Array<ASTAttr>,
@@ -529,7 +530,7 @@ export function parseFor (exp: string): ?ForParseResult {
   }
   return res
 }
-// v-if
+// v-if 的处理
 function processIf (el) {
   const exp = getAndRemoveAttr(el, 'v-if')
   if (exp) {

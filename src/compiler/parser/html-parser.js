@@ -186,7 +186,7 @@ export function parseHTML (html, options) {
     index += n
     html = html.substring(n)
   }
-解析开头的tag
+// 解析开头的tag
   function parseStartTag () {
     const start = html.match(startTagOpen)
     if (start) {

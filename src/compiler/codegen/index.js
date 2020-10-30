@@ -10,6 +10,7 @@ type TransformFunction = (el: ASTElement, code: string) => string;
 type DataGenFunction = (el: ASTElement) => string;
 type DirectiveFunction = (el: ASTElement, dir: ASTDirective, warn: Function) => boolean;
 
+// 创建变量的类，包含指令
 export class CodegenState {
   options: CompilerOptions;
   warn: Function;
@@ -52,6 +53,7 @@ export function generate (
   }
 }
 
+// 生成html元素
 export function genElement (el: ASTElement, state: CodegenState): string {
   if (el.parent) {
     el.pre = el.pre || el.parent.pre
@@ -117,6 +119,7 @@ function genStatic (el: ASTElement, state: CodegenState): string {
 // v-once
 function genOnce (el: ASTElement, state: CodegenState): string {
   el.onceProcessed = true
+  // 处理if
   if (el.if && !el.ifProcessed) {
     return genIf(el, state)
   } else if (el.staticInFor) {
@@ -152,6 +155,7 @@ export function genIf (
   return genIfConditions(el.ifConditions.slice(), state, altGen, altEmpty)
 }
 
+// v-if
 function genIfConditions (
   conditions: ASTIfConditions,
   state: CodegenState,
@@ -183,6 +187,7 @@ function genIfConditions (
   }
 }
 
+// v-for的转格式
 export function genFor (
   el: any,
   state: CodegenState,

@@ -20,6 +20,7 @@ Vue.prototype.$mount = function (
   el?: string | Element, // 这里的类型element就是dom元素
   hydrating?: boolean // 服务端渲染相关的参数
 ): Component {
+  debugger
   el = el && query(el) // 如果传的string就去querySelector
 
   /* istanbul ignore if */

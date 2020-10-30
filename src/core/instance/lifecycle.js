@@ -11,7 +11,7 @@ import { pushTarget, popTarget } from '../observer/dep'
 
 import {
   warn,
-  noop,
+  noop, // 空函数mountComponent
   remove,
   emptyObject,
   validateProp,
@@ -144,7 +144,9 @@ export function mountComponent (
   el: ?Element,
   hydrating?: boolean
 ): Component {
+  // 储存挂载节点
   vm.$el = el
+  // 兼容jsx模式的render，这里这个没有complier，所以报错
   if (!vm.$options.render) {
     vm.$options.render = createEmptyVNode
     if (process.env.NODE_ENV !== 'production') {
@@ -165,10 +167,12 @@ export function mountComponent (
       }
     }
   }
+  // 挂载前
   callHook(vm, 'beforeMount')
 
   let updateComponent
   /* istanbul ignore if */
+  // 开发模式的一些性能检查可以先不管
   if (process.env.NODE_ENV !== 'production' && config.performance && mark) {
     updateComponent = () => {
       const name = vm._name

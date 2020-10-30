@@ -6,6 +6,20 @@ var apiURL = 'https://api.github.com/repos/vuejs/vue/commits?per_page=3&sha='
  * Actual demo
  */
 
+const extend = {
+  created() {
+    console.log(this);
+  },
+  mounted() {
+    this.test()
+  },
+  methods: {
+    test() {
+      console.log('test')
+    }
+  }
+}
+
 new Vue({
 
   el: '#demo',
@@ -16,6 +30,7 @@ new Vue({
     commits: null
   },
 
+  extends: extend,
   created: function () {
     this.fetchData()
   },

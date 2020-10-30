@@ -76,6 +76,7 @@ const builds = {
     banner
   },
   // Runtime+compiler ES modules build (for bundlers)
+  // 用这个入口就可以了，es的模块类型
   'web-full-esm': {
     entry: resolve('web/entry-runtime-with-compiler.js'),
     dest: resolve('dist/vue.esm.js'),

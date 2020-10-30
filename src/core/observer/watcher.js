@@ -53,6 +53,7 @@ export default class Watcher {
     if (isRenderWatcher) {
       vm._watcher = this
     }
+    // 保存watcher的实例
     vm._watchers.push(this)
     // options
     if (options) {

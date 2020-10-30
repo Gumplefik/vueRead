@@ -23,6 +23,7 @@ export function optimize (root: ?ASTElement, options: CompilerOptions) {
   isStaticKey = genStaticKeysCached(options.staticKeys || '')
   isPlatformReservedTag = options.isReservedTag || no
   // first pass: mark all non-static nodes.
+  // 标记静态节点
   markStatic(root)
   // second pass: mark static roots.
   markStaticRoots(root, false)
@@ -48,6 +49,7 @@ function markStatic (node: ASTNode) {
     ) {
       return
     }
+    // 遍历children标记
     for (let i = 0, l = node.children.length; i < l; i++) {
       const child = node.children[i]
       markStatic(child)
@@ -97,6 +99,7 @@ function markStaticRoots (node: ASTNode, isInFor: boolean) {
   }
 }
 
+// 看是不是静态静态
 function isStatic (node: ASTNode): boolean {
   if (node.type === 2) { // expression
     return false

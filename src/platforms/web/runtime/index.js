@@ -9,8 +9,8 @@ import { devtools, inBrowser } from 'core/util/index'
 import {
   query,
   mustUseProp,
-  isReservedTag,
-  isReservedAttr,
+  isReservedTag, // html和svg标签
+  isReservedAttr, // class, style
   getTagNamespace,
   isUnknownElement
 } from 'web/util/index'
@@ -41,11 +41,13 @@ Vue.prototype.$mount = function (
   hydrating?: boolean
 ): Component {
   el = el && inBrowser ? query(el) : undefined
+  // 核心入口，一切基于挂载节点
   return mountComponent(this, el, hydrating) // 挂在节点 这里没有complier
 }
 
 // devtools global hook
 /* istanbul ignore next */
+// 忽略不计，devtool的钩子
 if (inBrowser) {
   setTimeout(() => {
     if (config.devtools) {
